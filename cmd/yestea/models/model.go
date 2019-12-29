@@ -13,4 +13,10 @@ type Model struct {
 
 type Todo struct {
 	Model
-	Name string `gorm:"column:name" json:"name"`}
+	Title string `gorm:"column:title" json:"title"`
+	Description string `gorm:"column:description" json:"description"`
+}
+
+func (b *Todo) TableName() string {
+	return "todos"
+}

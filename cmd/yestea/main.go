@@ -7,6 +7,7 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/xfyuan/go-yestea/cmd/yestea/apis"
 	"github.com/xfyuan/go-yestea/cmd/yestea/config"
+	"github.com/xfyuan/go-yestea/cmd/yestea/models"
 	"log"
 )
 
@@ -32,6 +33,7 @@ func main() {
 	}
 
 	defer config.Config.DB.Close()
+	config.Config.DB.AutoMigrate(&models.Todo{})
 
 	log.Println("Successfully connected to database")
 
