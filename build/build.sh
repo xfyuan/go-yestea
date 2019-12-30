@@ -28,5 +28,5 @@ export GOFLAGS="-mod=vendor"
 # Build the application. `-ldflags -X` sets version variable in importpath for each `go tool link` invocation
 go install                                                      \
     -installsuffix "static"                                     \
-    -ldflags "-X $(go list -m)/pkg/version.VERSION=${VERSION}"  \
+    -ldflags "-X $(go list -m)/pkg/version.VERSION=${VERSION} -X main.VSN=${VERSION} -X 'main.BUILD_TIME=`date`' -X 'main.GO_VERSION=`go version`'"  \
     ./...

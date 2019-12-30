@@ -9,9 +9,23 @@ import (
 	"github.com/xfyuan/go-yestea/cmd/yestea/config"
 	"github.com/xfyuan/go-yestea/cmd/yestea/models"
 	"log"
+	"os"
+)
+
+var (
+	GO_VERSION string
+	BUILD_TIME string
+	VSN        string
 )
 
 func main() {
+	args := os.Args
+	if len(args) == 2 && (args[1] == "--version" || args[1] == "-v") {
+		fmt.Printf("Version: %s\n", VSN)
+		fmt.Printf("Build Time : %s\n", BUILD_TIME)
+		fmt.Printf("%s\n", GO_VERSION)
+		return
+	}
 	// load application configurations
 	if err := config.LoadConfig("./config"); err != nil {
 		panic(fmt.Errorf("invalid application configuration: %s", err))
