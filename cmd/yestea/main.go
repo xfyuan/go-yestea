@@ -41,7 +41,14 @@ func main() {
 		v1.GET("/todos/:id", apis.GetTodo)
 	}
 
-	config.Config.DB, config.Config.DBErr = gorm.Open("postgres", config.Config.DSN)
+	dsn := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable",
+		config.Config.Database.Username,
+		config.Config.Database.Password,
+		config.Config.Database.Host,
+		config.Config.Database.Port,
+		config.Config.Database.DBName)
+
+	config.Config.DB, config.Config.DBErr = gorm.Open("postgres", dsn)
 	if config.Config.DBErr != nil {
 		panic(config.Config.DBErr)
 	}

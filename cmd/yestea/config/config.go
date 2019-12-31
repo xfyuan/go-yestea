@@ -17,20 +17,36 @@ type appConfig struct {
 	// the server port. Defaults to 8080
 	ServerPort int `mapstructure:"server_port"`
 	// the data source name (DSN) for connecting to the database. required.
-	DSN string `mapstructure:"dsn"`
+	//DSN string `mapstructure:"dsn"`
+	Database dbConfog
 	// the API key needed to authorize to API. required.
 	//ApiKey string `mapstructure:"api_key"`
+}
+
+type dbConfog struct {
+	Host     string `mapstructure:"host"`
+	Port     string `mapstructure:"port"`
+	DBName   string `mapstructure:"dbname"`
+	Username string `mapstructure:"username"`
+	Password string `mapstructure:"password"`
 }
 
 // LoadConfig loads config from files
 func LoadConfig(configPaths ...string) error {
 	v := viper.New()
-	v.SetConfigName("example")
-	v.SetConfigType("yaml")
 	v.SetEnvPrefix("yestea")
-	v.AutomaticEnv()
+	v.BindEnv("env")
+	//v.AutomaticEnv()
+	env := v.Get("ENV")
+	if env == "PRODUCTION" {
+		v.SetConfigName("prod")
+	} else {
+		v.SetConfigName("dev")
+	}
 
-	Config.DSN = v.Get("DSN").(string)
+	v.SetConfigType("yaml")
+
+	//Config.DSN = v.Get("DSN").(string)
 	//Config.ApiKey = v.Get("API_KEY").(string)
 	v.SetDefault("server_port", 1234)
 
