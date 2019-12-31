@@ -5,8 +5,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
-	"github.com/xfyuan/go-yestea/cmd/yestea/apis"
-	"github.com/xfyuan/go-yestea/cmd/yestea/config"
+	"github.com/xfyuan/go-yestea/cmd/yestea/app"
+	"github.com/xfyuan/go-yestea/cmd/yestea/controllers"
 	"github.com/xfyuan/go-yestea/cmd/yestea/models"
 	"log"
 	"os"
@@ -27,10 +27,9 @@ func main() {
 		return
 	}
 	// load application configurations
-	if err := config.LoadConfig("./config"); err != nil {
+	if err := app.LoadConfig("./config"); err != nil {
 		panic(fmt.Errorf("invalid application configuration: %s", err))
 	}
-	fmt.Println(config.Config)
 
 	r := gin.New()
 	r.Use(gin.Logger())
@@ -38,25 +37,26 @@ func main() {
 
 	v1 := r.Group("/api/v1")
 	{
-		v1.GET("/todos/:id", apis.GetTodo)
+		v1.GET("/todos/:id", controllers.GetTodo)
 	}
 
 	dsn := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable",
-		config.Config.Database.Username,
-		config.Config.Database.Password,
-		config.Config.Database.Host,
-		config.Config.Database.Port,
-		config.Config.Database.DBName)
+		app.Viper.GetString("database.username"),
+		app.Viper.GetString("database.password"),
+		app.Viper.GetString("database.host"),
+		app.Viper.GetString("database.port"),
+		app.Viper.GetString("database.dbname"),
+	)
 
-	config.Config.DB, config.Config.DBErr = gorm.Open("postgres", dsn)
-	if config.Config.DBErr != nil {
-		panic(config.Config.DBErr)
+	app.DB, app.DBErr = gorm.Open("postgres", dsn)
+	if app.DBErr != nil {
+		panic(app.DBErr)
 	}
 
-	defer config.Config.DB.Close()
-	config.Config.DB.AutoMigrate(&models.Todo{})
+	defer app.DB.Close()
+	app.DB.AutoMigrate(&models.Todo{})
 
 	log.Println("Successfully connected to database")
 
-	r.Run(fmt.Sprintf(":%v", config.Config.ServerPort))
+	r.Run(fmt.Sprintf(":%v", "1234"))
 }
