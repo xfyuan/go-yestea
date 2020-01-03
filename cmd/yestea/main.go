@@ -14,9 +14,7 @@ import (
 
 func main() {
 	// load application configurations
-	if err := app.LoadConfig(); err != nil {
-		panic(fmt.Errorf("invalid application configuration: %s", err))
-	}
+	app.LoadConfig("./config")
 
 	r := gin.New()
 	r.Use(gin.Logger())
