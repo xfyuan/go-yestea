@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
+	"github.com/spf13/viper"
 	"github.com/xfyuan/go-yestea/cmd/yestea/app"
 	"github.com/xfyuan/go-yestea/cmd/yestea/controllers"
 	"github.com/xfyuan/go-yestea/cmd/yestea/models"
@@ -27,7 +28,7 @@ func main() {
 		return
 	}
 	// load application configurations
-	if err := app.LoadConfig("./config"); err != nil {
+	if err := app.LoadConfig(); err != nil {
 		panic(fmt.Errorf("invalid application configuration: %s", err))
 	}
 
@@ -41,11 +42,11 @@ func main() {
 	}
 
 	dsn := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable",
-		app.Viper.GetString("database.username"),
-		app.Viper.GetString("database.password"),
-		app.Viper.GetString("database.host"),
-		app.Viper.GetString("database.port"),
-		app.Viper.GetString("database.dbname"),
+		viper.GetString("database.username"),
+		viper.GetString("database.password"),
+		viper.GetString("database.host"),
+		viper.GetString("database.port"),
+		viper.GetString("database.dbname"),
 	)
 
 	app.DB, app.DBErr = gorm.Open("postgres", dsn)
