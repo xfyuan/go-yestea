@@ -20,7 +20,7 @@ func LoadConfig() {
 	viper.AutomaticEnv()
 
 	viper.SetConfigType("yaml")
-	viper.AddConfigPath(rootPath() + "config")
+	viper.AddConfigPath(RootPath() + "config")
 
 	viper.SetConfigName("config")
 	if err := viper.ReadInConfig(); err != nil {
@@ -37,7 +37,7 @@ func LoadConfig() {
 	}
 }
 
-func rootPath() string {
+func RootPath() string {
 	// find current path
 	_, filename, _, _ := runtime.Caller(0)
 	currentPath := filepath.Dir(filename)
