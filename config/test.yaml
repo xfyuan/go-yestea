@@ -1,3 +1,4 @@
+apikey: test_api_key
 database:
   host: 127.0.0.1
   port: 5432

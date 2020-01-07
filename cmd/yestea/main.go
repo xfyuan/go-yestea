@@ -1,20 +1,22 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
-	"github.com/xfyuan/go-yestea/cmd/yestea/app"
-	"github.com/xfyuan/go-yestea/cmd/yestea/controllers"
-	"github.com/xfyuan/go-yestea/cmd/yestea/models"
-	"log"
-
+	"github.com/spf13/viper"
 	swaggerFiles "github.com/swaggo/files"
 	"github.com/swaggo/gin-swagger"
+	"github.com/xfyuan/go-yestea/cmd/yestea/app"
+	"github.com/xfyuan/go-yestea/cmd/yestea/controllers"
+	"github.com/xfyuan/go-yestea/cmd/yestea/httputils"
+	"github.com/xfyuan/go-yestea/cmd/yestea/models"
+	"log"
+	"net/http"
 
 	_ "github.com/xfyuan/go-yestea/cmd/yestea/docs"
-
 )
 
 // @title Yestea Swagger API
@@ -41,6 +43,7 @@ func main() {
 
 	v1 := r.Group("/api/v1")
 	{
+		v1.Use(auth())
 		v1.GET("/todos/:id", controllers.GetTodo)
 	}
 
@@ -57,4 +60,19 @@ func main() {
 	log.Println("Successfully connected to database")
 
 	r.Run(fmt.Sprintf(":%v", "1234"))
+}
+
+func auth() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		authHeader := c.GetHeader("Authorization")
+		if len(authHeader) == 0 {
+			httputils.NewError(c, http.StatusUnauthorized, errors.New("Authorization header is required!"))
+			c.Abort()
+		}
+		if authHeader != viper.Get("apikey") {
+			httputils.NewError(c, http.StatusUnauthorized, fmt.Errorf("Not authorized to this operation: api_key=%s", authHeader))
+			c.Abort()
+		}
+		c.Next()
+	}
 }
