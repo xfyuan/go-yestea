@@ -9,8 +9,26 @@ import (
 	"github.com/xfyuan/go-yestea/cmd/yestea/controllers"
 	"github.com/xfyuan/go-yestea/cmd/yestea/models"
 	"log"
+
+	swaggerFiles "github.com/swaggo/files"
+	"github.com/swaggo/gin-swagger"
+
+	_ "github.com/xfyuan/go-yestea/cmd/yestea/docs"
+
 )
 
+// @title Yestea Swagger API
+// @version 1.0
+// @description Swagger API for Golang Project Yestea.
+// @termsOfService http://swagger.io/terms/
+
+// @contact.name API Support
+// @contact.email yuan.xiaofeng@gmail.com
+
+// @license.name MIT
+// @license.url https://github.com/xfyuan/go-yestea/blob/master/LICENSE
+
+// @BasePath /api/v1
 func main() {
 	// load application configurations
 	app.LoadConfig()
@@ -18,6 +36,8 @@ func main() {
 	r := gin.New()
 	r.Use(gin.Logger())
 	r.Use(gin.Recovery())
+
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	v1 := r.Group("/api/v1")
 	{

@@ -1,0 +1,38 @@
+basePath: /api/v1
+definitions:
+  models.Todo:
+    properties:
+      description:
+        type: string
+      title:
+        type: string
+    type: object
+info:
+  contact:
+    email: yuan.xiaofeng@gmail.com
+    name: API Support
+  description: Swagger API for Golang Project Yestea.
+  license:
+    name: MIT
+    url: https://github.com/xfyuan/go-yestea/blob/master/LICENSE
+  termsOfService: http://swagger.io/terms/
+  title: Yestea Swagger API
+  version: "1.0"
+paths:
+  /users/{id}:
+    get:
+      parameters:
+      - description: Todo ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Todo'
+      summary: Retrieves todo based on given ID
+swagger: "2.0"

@@ -9,6 +9,12 @@ import (
 	"strconv"
 )
 
+// GetUser godoc
+// @Summary Retrieves todo based on given ID
+// @Produce json
+// @Param id path integer true "Todo ID"
+// @Success 200 {object} models.Todo
+// @Router /users/{id} [get]
 func GetTodo(c *gin.Context) {
 	s := services.NewTodoService(daos.NewTodoDAO())
 	id, _ := strconv.ParseUint(c.Param("id"), 10, 32)
