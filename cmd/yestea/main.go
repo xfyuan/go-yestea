@@ -31,6 +31,10 @@ import (
 // @license.url https://github.com/xfyuan/go-yestea/blob/master/LICENSE
 
 // @BasePath /api/v1
+
+// @securityDefinitions.apikey ApiKeyAuth
+// @in header
+// @name Authorization
 func main() {
 	// load application configurations
 	app.LoadConfig()

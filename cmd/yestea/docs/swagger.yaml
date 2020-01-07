@@ -34,5 +34,12 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/models.Todo'
+      security:
+      - ApiKeyAuth: []
       summary: Retrieves todo based on given ID
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"

@@ -15,6 +15,7 @@ import (
 // @Param id path integer true "Todo ID"
 // @Success 200 {object} models.Todo
 // @Router /users/{id} [get]
+// @Security ApiKeyAuth
 func GetTodo(c *gin.Context) {
 	s := services.NewTodoService(daos.NewTodoDAO())
 	id, _ := strconv.ParseUint(c.Param("id"), 10, 32)
