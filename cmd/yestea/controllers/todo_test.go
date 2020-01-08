@@ -3,7 +3,6 @@ package controllers
 import (
 	"bytes"
 	"encoding/json"
-	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 	"github.com/xfyuan/go-yestea/cmd/yestea/app"
 	"github.com/xfyuan/go-yestea/cmd/yestea/gspec"
@@ -13,12 +12,6 @@ import (
 	"net/http/httptest"
 	"testing"
 )
-
-func newRouter() *gin.Engine {
-	gin.SetMode(gin.TestMode)
-	router := gin.New()
-	return router
-}
 
 func TestGetTodo(t *testing.T) {
 	app.DB = gspec.ResetDB()
@@ -30,7 +23,7 @@ func TestGetTodo(t *testing.T) {
 		Description: expectDescription,
 	})
 
-	router := newRouter()
+	router := gspec.NewRouter()
 	router.Handle("GET", "/todos/:id", GetTodo)
 	res := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/todos/1", bytes.NewBufferString(""))
@@ -57,7 +50,7 @@ func TestGetTodo_NotFound(t *testing.T) {
 		Description: expectDescription,
 	})
 
-	router := newRouter()
+	router := gspec.NewRouter()
 	router.Handle("GET", "/todos/:id", GetTodo)
 	res := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/todos/9999", bytes.NewBufferString(""))
