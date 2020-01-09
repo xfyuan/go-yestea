@@ -2,16 +2,11 @@ package main
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
-	swaggerFiles "github.com/swaggo/files"
-	"github.com/swaggo/gin-swagger"
 	"github.com/xfyuan/go-yestea/cmd/yestea/app"
-	"github.com/xfyuan/go-yestea/cmd/yestea/controllers"
-	_ "github.com/xfyuan/go-yestea/cmd/yestea/docs"
-	"github.com/xfyuan/go-yestea/cmd/yestea/middlewares"
 	"github.com/xfyuan/go-yestea/cmd/yestea/models"
+	"github.com/xfyuan/go-yestea/cmd/yestea/routes"
 	"log"
 )
 
@@ -35,17 +30,7 @@ func main() {
 	// load application configurations
 	app.LoadConfig()
 
-	r := gin.New()
-	r.Use(gin.Logger())
-	r.Use(gin.Recovery())
-
-	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-
-	v1 := r.Group("/api/v1")
-	{
-		v1.Use(middlewares.Auth())
-		v1.GET("/todos/:id", controllers.GetTodo)
-	}
+	r := routes.Initialize()
 
 	dsn := app.GenerateDSN()
 
@@ -59,5 +44,8 @@ func main() {
 
 	log.Println("Successfully connected to database")
 
-	r.Run(fmt.Sprintf(":%v", "1234"))
+	if err := r.Run(fmt.Sprintf(":%v", "1234")); err != nil {
+		panic(fmt.Errorf("gin run failed: [%s]", err))
+	}
+
 }

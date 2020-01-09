@@ -7,6 +7,7 @@ import (
 	. "github.com/onsi/gomega"
 	"github.com/xfyuan/go-yestea/cmd/yestea/app"
 	"github.com/xfyuan/go-yestea/cmd/yestea/gspec"
+	"github.com/xfyuan/go-yestea/cmd/yestea/middlewares"
 	"github.com/xfyuan/go-yestea/cmd/yestea/models"
 	"io/ioutil"
 	"net/http"
@@ -19,10 +20,11 @@ var _ = Describe("Controllers", func() {
 	)
 
 	BeforeEach(func() {
+		app.DB = gspec.ResetDB()
+
 		router = gspec.NewRouter()
 		router.Use(gspec.SetAuthHeader())
-
-		app.DB = gspec.ResetDB()
+		router.Use(middlewares.Auth())
 	})
 
 	Describe("#GetTodo", func() {
